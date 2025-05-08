@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>한국폴리텍대학 광주캠퍼스 위치</title>
+  <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=12394acfd3f1523dba02eedc41788de9&libraries=services"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <style>
+    #map {
+      width: 100%;
+      height: 400px;
+      margin-bottom: 20px;
+    }
+    #qr {
+      width: 200px;
+      height: 200px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>한국폴리텍대학 광주캠퍼스 위치</h2>
+<div id="map"></div>
+<canvas id="qr"></canvas>
+
+<script>
+  // 주소 → 좌표 변환 함수
+  function getCoordsByAddress(address) {
+    return fetch(`https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(address)}`, {
+      headers: {
+        Authorization: '87043c045a55b81fb8aec8e47c57a626'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.documents.length > 0) {
+        return {
+          lat: data.documents[0].y,
+          lng: data.documents[0].x
+        };
+      } else {
+        throw new Error("주소 결과가 없습니다.");
+      }
+    });
+  }
+
+  // 주소로 마커 표시
+  const address = "한국폴리텍대학 광주캠퍼스";
+  getCoordsByAddress(address)
+    .then(coords => {
+      const mapContainer = document.getElementById('map');
+      const mapOption = {
+        center: new kakao.maps.LatLng(coords.lat, coords.lng),
+        level: 3
+      };
+      const map = new kakao.maps.Map(mapContainer, mapOption);
+
+      const marker = new kakao.maps.Marker({
+        position: new kakao.maps.LatLng(coords.lat, coords.lng)
+      });
+      marker.setMap(map);
+    })
+    .catch(err => console.error(err));
+
+  // QR코드 생성 (현재 로컬 주소 기준: file:// 로는 안 됨, 웹에 업로드해야 QR 사용 가능)
+  const url = "https://your-host.com/index.html";  // 나중에 웹에 올렸을 때 주소 입력
+  QRCode.toCanvas(document.getElementById('qr'), url, function (error) {
+    if (error) console.error(error);
+    console.log('QR code 생성 완료!');
+  });
+</script>
+
+</body>
+</html>

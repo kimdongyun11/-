@@ -63,7 +63,7 @@
     .catch(err => console.error(err));
 
   // QR코드 생성 (현재 로컬 주소 기준: file:// 로는 안 됨, 웹에 업로드해야 QR 사용 가능)
-  const url = "https://your-host.com/index.html";  // 나중에 웹에 올렸을 때 주소 입력
+  const url = "https://kimdongyun11.github.io/-/";  // 나중에 웹에 올렸을 때 주소 입력
   QRCode.toCanvas(document.getElementById('qr'), url, function (error) {
     if (error) console.error(error);
     console.log('QR code 생성 완료!');
